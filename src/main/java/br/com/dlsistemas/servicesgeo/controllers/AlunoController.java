@@ -61,32 +61,5 @@ public class AlunoController {
 		model.addAttribute("alunos", alunos);
 		return "aluno/pesquisarnome";
 	}
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 }
