@@ -1,7 +1,5 @@
 package br.com.dlsistemas.servicesgeo.repositorys;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,32 +22,29 @@ import br.com.dlsistemas.servicesgeo.models.Aluno;
 
 @Repository
 public class AlunoRepository {
-	
+
 	private MongoClient cliente;
 	private MongoDatabase bd;
-	
-	
+
 	private void criarConexao() {
 		Codec<Document> codec = MongoClient.getDefaultCodecRegistry().get(Document.class);
 		AlunoCodec alunoCodec = new AlunoCodec(codec);
-		
-		
+
 		CodecRegistry registro = CodecRegistries.fromRegistries(MongoClient.getDefaultCodecRegistry(),
 				CodecRegistries.fromCodecs(alunoCodec));
-		
+
 		MongoClientOptions opcoes = MongoClientOptions.builder().codecRegistry(registro).build();
-		
+
 		this.cliente = new MongoClient("localhost:27017", opcoes);
 		this.bd = cliente.getDatabase("test");
 	}
-	
 
 	public void salvar(Aluno aluno) {
-		
+
 		criarConexao();
 		MongoCollection<Aluno> alunos = this.bd.getCollection("alunos", Aluno.class);
-		
-		if(aluno.getId() == null){		
+
+		if (aluno.getId() == null) {
 			alunos.insertOne(aluno);
 		} else {
 			alunos.updateOne(Filters.eq("_id", aluno.getId()), new Document("$set", aluno));
@@ -57,31 +52,51 @@ public class AlunoRepository {
 		cliente.close();
 	}
 
-	
-	public List<Aluno> ObterTodosAlunos(){
-		
+	public List<Aluno> ObterTodosAlunos() {
+
 		criarConexao();
-		
+
 		MongoCollection<Aluno> alunos = this.bd.getCollection("alunos", Aluno.class);
-		
-		MongoCursor<Aluno> resultado = alunos.find().iterator();
-		
-		List<Aluno> alunosEncontrados = new ArrayList<>();
-		
-		while(resultado.hasNext()) {
-			Aluno aluno = resultado.next();
-			alunosEncontrados.add(aluno);
-		}
-		
-		cliente.close();
+
+		MongoCursor<Aluno> resultados = alunos.find().iterator();
+
+		List<Aluno> alunosEncontrados = popularAlunos(resultados);
+
+		fecharConexao();
 		return alunosEncontrados;
 	}
-	
+
 	public Aluno obterAlunoPor(String id) {
 		criarConexao();
 		MongoCollection<Aluno> alunos = this.bd.getCollection("alunos", Aluno.class);
 		Aluno aluno = alunos.find(Filters.eq("_id", new ObjectId(id))).first();
-		
+		fecharConexao();
+
 		return aluno;
+	}
+
+	public List<Aluno> pesquisarAlunoPor(String nome) {
+		criarConexao();
+		MongoCollection<Aluno> alunosCollection = this.bd.getCollection("alunos", Aluno.class);
+		MongoCursor<Aluno> resultados = alunosCollection.find(Filters.eq("nome", nome), Aluno.class).iterator();
+		
+		List<Aluno> alunos = popularAlunos(resultados);
+
+		fecharConexao();
+		
+		return alunos;
+	}
+
+	private void fecharConexao() {
+		this.cliente.close();
+	}
+
+	private List<Aluno> popularAlunos(MongoCursor<Aluno> resultados) {
+		List<Aluno> alunos = new ArrayList<>();
+
+		while (resultados.hasNext()) {
+			alunos.add(resultados.next());
+		}
+		return alunos;
 	}
 }
