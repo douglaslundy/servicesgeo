@@ -11,6 +11,7 @@ public class Aluno {
 	
 	private ObjectId id;
 	private String nome;
+	private Contato contato;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date dataNascimento;
@@ -50,6 +51,14 @@ public class Aluno {
 			notas = new ArrayList<Nota>();
 		}
 		return notas;
+	}
+	
+	
+	public Contato getContato() {
+		return contato;
+	}
+	public void setContato(Contato contato) {
+		this.contato = contato;
 	}
 	public void setNotas(List<Nota> notas) {
 		this.notas = notas;
