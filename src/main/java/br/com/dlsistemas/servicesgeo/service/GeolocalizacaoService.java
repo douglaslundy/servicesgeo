@@ -21,7 +21,7 @@ import br.com.dlsistemas.servicesgeo.models.Contato;
 public class GeolocalizacaoService {
 
 	public List<Double> obterLatELongPor(Contato contato) throws ApiException, InterruptedException, IOException{
-		GeoApiContext context = new GeoApiContext().setApiKey("AIzaSyBF0nxlRk0E68sOx3a4vozQUYWvxxqbwjg");
+		GeoApiContext context = new GeoApiContext().setApiKey("");
 		GeocodingApiRequest request = GeocodingApi.newRequest(context).address(contato.getEndereco());
 		
 		GeocodingResult[] results = request.await();
