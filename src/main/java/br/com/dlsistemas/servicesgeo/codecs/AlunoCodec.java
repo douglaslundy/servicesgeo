@@ -16,6 +16,7 @@ import org.bson.codecs.EncoderContext;
 import org.bson.types.ObjectId;
 
 import br.com.dlsistemas.servicesgeo.models.Aluno;
+import br.com.dlsistemas.servicesgeo.models.Contato;
 import br.com.dlsistemas.servicesgeo.models.Curso;
 import br.com.dlsistemas.servicesgeo.models.Habilidade;
 import br.com.dlsistemas.servicesgeo.models.Nota;
@@ -36,8 +37,18 @@ public class AlunoCodec implements CollectibleCodec<Aluno> {
 		Curso curso = aluno.getCurso();
 		List<Habilidade> habilidades = aluno.getHabilidades();
 		List<Nota> notas = aluno.getNotas();
+		Contato contato = aluno.getContato();
 
 		Document document = new Document();
+
+		List<Double> coordinates = new ArrayList<Double>();
+
+		for (Double location : contato.getCoordinates()) {
+			coordinates.add(location);
+		}
+
+		document.put("contato", new Document().append("endereco", contato.getEndereco())
+				.append("coordinates", coordinates).append("type", contato.getType()));
 
 		document.put("_id", id);
 		document.put("nome", nome);
@@ -98,18 +109,24 @@ public class AlunoCodec implements CollectibleCodec<Aluno> {
 			}
 		}
 
-		
 		List<Document> habilidades = (List<Document>) document.get("habilidades");
 
 		if (habilidades != null) {
 			List<Habilidade> habilidadesAluno = new ArrayList<>();
 			for (Document documentHabilidade : habilidades) {
-				habilidadesAluno.add(new Habilidade(documentHabilidade.getString("nome"), documentHabilidade.getString("nivel")));				
+				habilidadesAluno.add(
+						new Habilidade(documentHabilidade.getString("nome"), documentHabilidade.getString("nivel")));
 			}
 			aluno.setHabilidades(habilidadesAluno);
 		}
-	
 		
+		Document contato = (Document) document.get("contato");
+
+		if (contato != null) {
+			String endereco = contato.getString("endereco");
+			List<Double> coordinates = (List<Double>) contato.get("coordinates");
+			aluno.setContato(new Contato(endereco, coordinates));
+		}
 		return aluno;
 	}
 
