@@ -19,7 +19,7 @@
 </head>
 <body class="grey lighten-3">
 	<div id="formularioGeolocalizacao" class="container">
-		<h3 class="main-title center">Visualizar Aluno</h3>
+		<h3 class="main-title center">Visualizar Alunos proximos</h3>
 		<form class="col s12" action="/geolocalizacao/pesquisar" method="get">
 			<div class="row">
 				<div class="input-field col s12">
@@ -40,6 +40,10 @@
 				</div>
 			</div>
 		</form>
+		
+		<script th:inline="javascript">
+			var alunos = [[${alunosProximos}]];
+		</script>
 
 		<script
 			src="https://maps.googleapis.com/maps/api/js?key=&amp;callback=initMap"

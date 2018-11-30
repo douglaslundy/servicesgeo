@@ -32,8 +32,6 @@ public class GeolocalizacaoController {
 		List<Aluno> alunosProximos = alunoRepository.pesquisarPorGeoLocalizacao(aluno);
 		model.addAttribute("alunosProximos", alunosProximos);
 		
-
-		
 		return "geolocalizacao/pesquisar";	
 	}
 }

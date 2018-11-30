@@ -47,9 +47,6 @@ public class AlunoCodec implements CollectibleCodec<Aluno> {
 			coordinates.add(location);
 		}
 
-		document.put("contato", new Document().append("endereco", contato.getEndereco())
-				.append("coordinates", coordinates).append("type", contato.getType()));
-
 		document.put("_id", id);
 		document.put("nome", nome);
 		document.put("data_nascimento", dataNascimento);
@@ -74,6 +71,9 @@ public class AlunoCodec implements CollectibleCodec<Aluno> {
 			}
 			document.put("notas", notasParaSalvar);
 		}
+
+		document.put("contato", new Document().append("endereco", contato.getEndereco())
+				.append("coordinates", coordinates).append("type", contato.getType()));
 
 		codec.encode(writer, document, encoder);
 
@@ -119,7 +119,7 @@ public class AlunoCodec implements CollectibleCodec<Aluno> {
 			}
 			aluno.setHabilidades(habilidadesAluno);
 		}
-		
+
 		Document contato = (Document) document.get("contato");
 
 		if (contato != null) {

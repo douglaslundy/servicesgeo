@@ -129,7 +129,7 @@ public class AlunoRepository {
 		List<Double> coordinates = aluno.getContato().getCoordinates();
 		Point pontoReferencia = new Point(new Position(coordinates.get(0), coordinates.get(1)));
 		
-		MongoCursor<Aluno> resultados = alunoCollection.find(Filters.nearSphere("contato", pontoReferencia, 2000.0,0.0)).limit(2).skip(1).iterator();
+		MongoCursor<Aluno> resultados = alunoCollection.find(Filters.nearSphere("contato", pontoReferencia, 20000.0,0.0)).limit(10).skip(1).iterator();
 		
 		List<Aluno> alunos = popularAlunos(resultados);		
 		fecharConexao();
